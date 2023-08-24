@@ -9,13 +9,13 @@ public class KeyService {
 
     private final KeyRepository repository;
 
-    // Spring will look for a bean that matches this type and inject our KeyRepository here
     public KeyService(KeyRepository repository) {
         this.repository = repository;
     }
 
     @PostConstruct
     public void init() {
+        System.out.println("Post construct ran");
         // This logic will run once after the service is constructed and its dependencies are injected
         if (repository.count() == 0) {
             this.repository.saveAll(defaultKeys());

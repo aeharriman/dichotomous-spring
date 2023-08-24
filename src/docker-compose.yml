@@ -1,6 +1,6 @@
 services:
   db:
-    container_name: hotelpostgres
+    container_name: dichotomous
     image: postgres
     environment:
       POSTGRES_USER: postgres

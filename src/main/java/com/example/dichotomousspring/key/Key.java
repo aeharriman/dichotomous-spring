@@ -1,5 +1,6 @@
 package com.example.dichotomousspring.key;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -7,11 +8,15 @@ public class Key {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonIgnore
     private Long id;
     private String name;
 
     @Column(length = 8000)
     private String key;
+
+//    @JsonIgnore
+//    private String userId;
 
 
     public Long getId() {
@@ -38,4 +43,13 @@ public class Key {
         this.key = key;
     }
 
+//    public String getUserId()
+//    {
+//        return userId;
+//    }
+//
+//    public void setUserId(String userId)
+//    {
+//        this.userId = userId;
+//    }
 }

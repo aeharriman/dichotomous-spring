@@ -99,6 +99,7 @@ public class KeyService {
 
     public List<Key> findAll() {
         return repository.findAll();
+//        return repository.findAllByUserId();
     }
 
     public Key create(Key key) {

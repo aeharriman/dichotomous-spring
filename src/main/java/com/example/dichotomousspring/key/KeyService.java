@@ -13,13 +13,12 @@ public class KeyService {
         this.repository = repository;
     }
 
+    // This logic will run once after the service is constructed and its dependencies are injected
     @PostConstruct
     public void init() {
-        System.out.println("Post construct ran");
-        // This logic will run once after the service is constructed and its dependencies are injected
-        if (repository.count() == 0) {
+//        if (repository.count() == 0) {
             this.repository.saveAll(defaultKeys());
-        }
+//        }
     }
 
     private static List<Key> defaultKeys()

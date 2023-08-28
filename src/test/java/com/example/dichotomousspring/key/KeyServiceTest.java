@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +43,19 @@ class KeyServiceTest {
 
     // See Repository test for initShouldSaveTheSpecificObjectsFromDefaultKeys()
 
+    @Test
+    public void findAllShouldCallReposFindAllAndReturnListOfKeys() {
+        Key key1 = new Key();
+        Key key2 = new Key();
+        List<Key> expectedKeys = Arrays.asList(key1, key2);
 
+        when(mockKeyRepository.findAll()).thenReturn(expectedKeys);
+
+        List<Key> actualKeys = keyServiceUnderTest.findAll();
+
+        assertEquals(expectedKeys, actualKeys);
+        verify(mockKeyRepository).findAll();
+    }
 
 
 }

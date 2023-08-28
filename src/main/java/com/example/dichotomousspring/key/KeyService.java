@@ -97,7 +97,7 @@ public class KeyService {
     }
 
     public List<Key> findAll() {
-        return null;
+        return repository.findAll();
 //        return repository.findAllByUserId();
     }
 

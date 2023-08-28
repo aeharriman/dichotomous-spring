@@ -18,7 +18,6 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Primary
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, CorsConfigurationSource corsConfigurationSource) throws Exception {
         System.out.println("SecurityFilterChain activated");
@@ -42,7 +41,7 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // or "*" to allow all origins
-        configuration.setAllowedMethods(Arrays.asList("GET"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*")); // or specify headers
 
         // allows you to provide different cors configurations for different url patterns. Not currently using

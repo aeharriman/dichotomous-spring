@@ -42,8 +42,7 @@ class KeyServiceTest {
     }
 
 
-    // See Repository test for initShouldSaveTheSpecificObjectsFromDefaultKeys()
-
+    // Integration test for this is in initShouldSaveTheSpecificObjectsFromDefaultKeys() in KeyRepositoryTest
 
     @Test
     void initShouldSaveTheSpecificObjectsFromDefaultKeys() {
@@ -69,8 +68,6 @@ class KeyServiceTest {
         assertEquals("Default 3", capturedKey3.getName());
         assertTrue(capturedKey3.getKey().contains("bird"));
     }
-
-
 
 
     @Test

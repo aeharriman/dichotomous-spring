@@ -6,6 +6,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -18,8 +20,9 @@ class KeyServiceTest {
     @Mock
     private KeyRepository mockKeyRepository;
 
+    // Unit tests
     @Test
-    void testInitWhenRepositoryIsEmpty() {
+    void initShouldCallSaveAllWhenRepositoryIsEmpty() {
         when(mockKeyRepository.count()).thenReturn(0L);
 
         keyServiceUnderTest.init();
@@ -28,13 +31,18 @@ class KeyServiceTest {
     }
 
     @Test
-    void testInitWhenRepositoryIsNotEmpty() {
-        when(mockKeyRepository.count()).thenReturn(1L); // or any non-zero number
+    void initShouldNotSaveAnythingWhenRepositoryIsNotEmpty() {
+        when(mockKeyRepository.count()).thenReturn(1L);
 
         keyServiceUnderTest.init();
 
         verify(mockKeyRepository, times(0)).saveAll(anyList());
     }
+
+
+    // See Repository test for initShouldSaveTheSpecificObjectsFromDefaultKeys()
+
+
 
 
 }

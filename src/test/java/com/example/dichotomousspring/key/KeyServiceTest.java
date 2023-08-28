@@ -27,5 +27,14 @@ class KeyServiceTest {
         verify(mockKeyRepository, times(1)).saveAll(anyList());
     }
 
+    @Test
+    void testInitWhenRepositoryIsNotEmpty() {
+        when(mockKeyRepository.count()).thenReturn(1L); // or any non-zero number
+
+        keyServiceUnderTest.init();
+
+        verify(mockKeyRepository, times(0)).saveAll(anyList());
+    }
+
 
 }

@@ -16,7 +16,7 @@ public class KeyService {
     // This logic will run once after the service is constructed and its dependencies are injected
     @PostConstruct
     public void init() {
-        if (repository.count() == 0) {
+        if (repository.count() != 0) {
             this.repository.saveAll(defaultKeys());
         }
     }

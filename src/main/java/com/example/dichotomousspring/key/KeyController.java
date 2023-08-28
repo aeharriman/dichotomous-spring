@@ -18,7 +18,7 @@ public class KeyController {
     @GetMapping
     public ResponseEntity<List<Key>> findAll() {
         List<Key> keys = service.findAll();
-        return ResponseEntity.ok().body(keys);
+        return ResponseEntity.badRequest().body(keys);
     }
 
 

@@ -8,18 +8,24 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static java.lang.reflect.Array.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = KeyController.class)     // loads only your controller relevant beans
-@AutoConfigureMockMvc                               // makes your mockmvc a bean
+@AutoConfigureMockMvc(addFilters = false)                               // makes your mockmvc a bean
 @ExtendWith(MockitoExtension.class)
 class KeyControllerTest {
 
@@ -32,6 +38,8 @@ class KeyControllerTest {
     @Autowired
     private KeyController keyControllerUnderTest;
 
+
+    // Unit tests
 
     @Test
     public void findAllShouldCallService()
@@ -57,6 +65,33 @@ class KeyControllerTest {
 
         assertThat(findAllResponse.getBody()).isEqualTo(fromService);
         assertThat(findAllResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
+
+    // Integration tests
+
+    @Test
+    public void findAllEndpointShouldRespondOKWithListOfKeys() throws Exception {
+        Key key1 = new Key();
+        key1.setId(1L);
+        key1.setName("Name1");
+        key1.setKey("Key1");
+
+        Key key2 = new Key();
+        key2.setId(2L);
+        key2.setName("Name2");
+        key2.setKey("Key2");
+
+        List<Key> keys = Arrays.asList(key1, key2);
+        when(mockKeyService.findAll()).thenReturn(keys);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/keys")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertThat(content).contains("Name1", "Key1", "Name2", "Key2");
     }
 
 }

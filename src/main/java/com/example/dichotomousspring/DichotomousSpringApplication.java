@@ -19,25 +19,21 @@ public class DichotomousSpringApplication {
     }
 
 
-    public static void main(String[] args)
-    {
-        dotEnvSafeCheck();
-        SpringApplication.run(DichotomousSpringApplication.class, args);
+    public static void main(String[] args) {
+            final var dotenv = Dotenv.configure()
+                    .ignoreIfMissing()
+                    .load();
+            dotEnvSafeCheck(dotenv);
+            SpringApplication.run(DichotomousSpringApplication.class, args);
     }
 
-    private static void dotEnvSafeCheck() {
-        final var dotenv = Dotenv.configure()
-                .ignoreIfMissing()
-                .load();
-
+    static void dotEnvSafeCheck(Dotenv dotenv) {
         stream(DotEnv.values())
                 .map(DotEnv::name)
                 .filter(varName -> dotenv.get(varName, "").isEmpty())
                 .findFirst()
                 .ifPresent(varName -> {
-                    System.out.println("[Fatal] Missing or empty environment variable: " + varName);
-
-                    System.exit(1);
+                    System.exit(2);
                 });
     }
 

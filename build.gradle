@@ -26,6 +26,7 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.hsqldb:hsqldb:2.5.2'
     runtimeOnly 'org.postgresql:postgresql'
+    testImplementation 'com.github.stefanbirkner:system-lambda:1.2.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }

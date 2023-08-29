@@ -42,6 +42,11 @@ class SecurityConfigTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    public void requestToRandomEndpointShouldRespondUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/random"))
+                .andExpect(status().isUnauthorized());
+    }
 
 
 }

@@ -24,8 +24,8 @@ public class SecurityConfig {
                 .authorizeRequests()
                 // .antMatchers and mvcMatchers were both deprecated
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/keys").authenticated()
-                .anyRequest().permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/keys").permitAll()
+                .anyRequest().denyAll()
                 .and()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))  // Use the custom CorsConfigurationSource
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));

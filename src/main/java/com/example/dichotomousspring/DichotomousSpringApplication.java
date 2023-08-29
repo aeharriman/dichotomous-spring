@@ -33,7 +33,7 @@ public class DichotomousSpringApplication {
                 .filter(varName -> dotenv.get(varName, "").isEmpty())
                 .findFirst()
                 .ifPresent(varName -> {
-                    System.exit(2);
+                    System.exit(1);
                 });
     }
 

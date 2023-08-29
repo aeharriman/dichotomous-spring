@@ -40,5 +40,11 @@ class KeyRepositoryTest {
         assertThat(keys).contains(savedKey1, savedKey2, savedKey3);
     }
 
+    @Test
+    void findAllShouldReturnEmptyListIfNothingInDatabase() {
+        List<Key> keys = keyRepositoryUnderTest.findAll();
+        assertThat(keys).isEmpty();
+    }
+
 
 }

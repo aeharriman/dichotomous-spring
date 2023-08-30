@@ -23,11 +23,13 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 // .antMatchers and mvcMatchers were both deprecated
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").denyAll()
                 .requestMatchers(HttpMethod.GET, "/api/keys").authenticated()
                 .anyRequest().denyAll()
                 .and()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))  // Use the custom CorsConfigurationSource
+                // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html#_supplying_audiences
+                // The default behavior should validate aud because we specified it in application.properties
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }

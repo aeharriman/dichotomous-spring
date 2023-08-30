@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -46,8 +47,17 @@ class SecurityConfigTest {
     }
 
     @Test
-    public void unauthenticatedRequestToKeysWithNoJwtShouldRespondUnauthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/keys").with(anonymous()))
+    @WithMockUser
+    public void authenticatedRequestToKeysShouldRespondOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/keys")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void unauthenticatedRequestToKeysShouldRespondUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/keys")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -56,6 +66,7 @@ class SecurityConfigTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/random"))
                 .andExpect(status().isUnauthorized());
     }
+
 
 //    @Test
 //    public void testRequestWithCorrectAudience() throws Exception {

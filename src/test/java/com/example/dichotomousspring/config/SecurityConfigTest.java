@@ -40,7 +40,7 @@ class SecurityConfigTest {
     }
 
     @Test
-    public void optionsRequestShouldGoThrough() throws Exception {
+    public void unauthenticatedOptionsRequestShouldGoThrough() throws Exception {
         mockMvc.perform(options("/api/keys")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -62,10 +62,14 @@ class SecurityConfigTest {
     }
 
     @Test
-    public void requestToRandomEndpointShouldRespondUnauthorized() throws Exception {
+    public void unauthenticatedRequestToRandomEndpointShouldRespondUnauthorized() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/random"))
                 .andExpect(status().isUnauthorized());
     }
+
+
+
+
 
 
 //    @Test

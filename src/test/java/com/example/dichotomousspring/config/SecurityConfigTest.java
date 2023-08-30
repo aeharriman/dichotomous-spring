@@ -67,6 +67,13 @@ class SecurityConfigTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    @WithMockUser
+    public void authenticatedRequestToRandomEndpointShouldRespondForbidden() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/random"))
+                .andExpect(status().isForbidden());
+    }
+
 
 
 

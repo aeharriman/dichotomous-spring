@@ -25,7 +25,7 @@ public class SecurityConfig {
                 // .antMatchers and mvcMatchers were both deprecated
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/keys").authenticated()
-                .anyRequest().denyAll()
+                .anyRequest().permitAll()
                 .and()
                 .cors(cors -> cors.configurationSource(corsConfigurationSource))  // Use the custom CorsConfigurationSource
                 // https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/jwt.html#_supplying_audiences

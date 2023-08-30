@@ -23,7 +23,7 @@ public class SecurityConfig {
         http
                 .authorizeRequests()
                 // .antMatchers and mvcMatchers were both deprecated
-                .requestMatchers(HttpMethod.OPTIONS, "/**").denyAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/keys").authenticated()
                 .anyRequest().denyAll()
                 .and()

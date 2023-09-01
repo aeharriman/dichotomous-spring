@@ -85,22 +85,22 @@ class SecurityConfigTest {
 
 
     // This will be reworked for Authorization if Authorization logic is added
-    public void testEndpointWithCorrectAudience() throws Exception {
-        // Create a JWT with the correct audience
-        Jwt jwt = Jwt.withTokenValue("token")
-                .header("alg", "none")
-                .claim("aud", audience)
-                .build();
-
-        // Mock JwtDecoder to return the JWT with the correct audience
-        Mockito.when(jwtDecoder.decode(anyString())).thenReturn(jwt);
-
-        // Perform the test and expect success
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/keys")
-                        .header("Authorization", "Bearer token"))
-                .andExpect(status().isOk());
-    }
+//    public void testEndpointWithCorrectAudience() throws Exception {
+//        // Create a JWT with the correct audience
+//        Jwt jwt = Jwt.withTokenValue("token")
+//                .header("alg", "none")
+//                .claim("aud", audience)
+//                .build();
+//
+//        // Mock JwtDecoder to return the JWT with the correct audience
+//        Mockito.when(jwtDecoder.decode(anyString())).thenReturn(jwt);
+//
+//        // Perform the test and expect success
+//        mockMvc.perform(MockMvcRequestBuilders
+//                        .get("/api/keys")
+//                        .header("Authorization", "Bearer token"))
+//                .andExpect(status().isOk());
+//    }
 
 
 }

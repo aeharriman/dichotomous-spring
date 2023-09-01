@@ -11,8 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -69,6 +71,74 @@ class SecurityConfigTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/api/random"))
                 .andExpect(status().isForbidden());
     }
+
+    // Cors tests
+    // tests for allowed methods
+    @Test
+    public void optionsShouldRespond200WithAllowMethods() throws Exception {
+        mockMvc.perform(options("/api/keys")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Allow", "GET,HEAD,OPTIONS"))
+                .andExpect(header().doesNotExist("Access-Control-Allow-Method"));
+    }
+
+    @Test
+    public void optionsWithoutAccessControlRequestMethodShouldStillRespond200WithAllowMethods() throws Exception {
+        mockMvc.perform(options("/api/keys"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Allow", "GET,HEAD,OPTIONS"))
+                .andExpect(header().doesNotExist("Access-Control-Allow-Method"));
+    }
+
+    @Test
+    public void optionsWithPreflightConfigurationShouldRespond200WithAccessControlAllowMethods() throws Exception {
+        mockMvc.perform(options("/api/keys")
+                        .header("Access-Control-Request-Headers", "authorization")
+                        // The browser sends this for its own sake for comparison
+                        .header("Access-Control-Request-Method", "GET")
+                        .header("Origin", "http://localhost:3000"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Methods", "GET"))
+                .andExpect(header().doesNotExist("Allow"));
+    }
+
+    // Tests for headers
+    @Test
+    public void optionsWithAccessControlRequestHeadersShouldRespondWithHeadersVary() throws Exception {
+        mockMvc.perform(options("/api/keys")
+                        .header("Access-Control-Request-Headers", "authorization"))
+                .andExpect(status().isOk())
+                // No ResultMatcher existed to pick out just one
+                .andExpect(header().stringValues("Vary", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"))
+                .andExpect(header().doesNotExist("Access-Control-Allow-Headers"));
+    }
+
+
+    @Test
+    public void optionsWithoutAccessControlRequestHeadersShouldStillRespondWithHeadersVary() throws Exception {
+        mockMvc.perform(options("/api/keys")
+                        .header("Access-Control-Request-Headers", "authorization"))
+                .andExpect(status().isOk())
+                .andExpect(header().stringValues("Vary", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"))
+                .andExpect(header().doesNotExist("Access-Control-Allow-Headers"));
+    }
+
+    @Test
+    public void optionsRequestWithPreflightConfigurationShouldAccessControlAllowHeadersFromRequest() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.options("/api/keys")
+                        .header("Access-Control-Request-Headers", "authorization")
+                        .header("Access-Control-Request-Method", "GET")
+                        .header("Origin", "http://localhost:3000"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Headers", "authorization"));
+    }
+
+    // Add tests for origin
+
+
+
+
 
     // JWT validation cannot be tested by mocking the decoding because decoding and validation are combined:
     // https://docs.spring.io/spring-security/site/docs/6.1.3/api/org/springframework/security/oauth2/jwt/NimbusJwtDecoder.html#decode(java.lang.String)

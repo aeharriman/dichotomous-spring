@@ -42,7 +42,7 @@ public class SecurityConfig {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000")); // or "*" to allow all origins
-        configuration.setAllowedMethods(Arrays.asList("GET", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET"));
         configuration.setAllowedHeaders(Arrays.asList("*")); // or specify headers
 
         // allows you to provide different cors configurations for different url patterns. Not currently using

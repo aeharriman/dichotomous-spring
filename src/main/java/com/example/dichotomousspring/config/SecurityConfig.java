@@ -57,4 +57,9 @@ public class SecurityConfig {
         return source;
     }
 
+    // oauth2ResourceServer() Http builder method that takes a oauth2ResourceServerCustomizer() –
+    // the Customizer to provide more options for the OAuth2ResourceServerConfigurer and returns the httpsecurity object for further customization
+//    OAuth2ResourceServerConfigurer - has a jwt() method that takes a jwtCustomizer argument, which
+//    configures a BearerTokenAuthenticationFilter with a JwtDecoder
+
 }

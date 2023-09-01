@@ -2,22 +2,26 @@ package com.example.dichotomousspring.config;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.SecurityFilterChain;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -29,6 +33,8 @@ class SecurityConfigTest {
     // Multiple points of research found many cases of people being told that people
     // do not unit test the security configuration and only use MockMvc
 
+    @Value("${auth0.audience}")
+    private String audience;
 
     @Autowired
     private MockMvc mockMvc;
@@ -74,28 +80,30 @@ class SecurityConfigTest {
                 .andExpect(status().isForbidden());
     }
 
+    // JWT validation cannot be tested by mocking the decoding because decoding and validation are combined:
+    // https://docs.spring.io/spring-security/site/docs/6.1.3/api/org/springframework/security/oauth2/jwt/NimbusJwtDecoder.html#decode(java.lang.String)
 
 
+    // This will be reworked for Authorization if Authorization logic is added
+    public void testEndpointWithCorrectAudience() throws Exception {
+        // Create a JWT with the correct audience
+        Jwt jwt = Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("aud", audience)
+                .build();
 
+        // Mock JwtDecoder to return the JWT with the correct audience
+        Mockito.when(jwtDecoder.decode(anyString())).thenReturn(jwt);
 
-
-//    @Test
-//    public void testRequestWithCorrectAudience() throws Exception {
-//        System.out.println("Running test: testRequestWithCorrectAudience");
-//        System.out.println("Simulated JWT Claims: aud=https://my-resource-server.example.com, iss=https://idp.example.com");
-//
-//        mockMvc.perform(MockMvcRequestBuilders
-//                        .get("/api/keys")
-//                        .with(jwt().jwt((jwt) -> jwt
-//                                .claim("aud", "https://my-resource-server.example.com")
-//                                .claim("iss", "https://idp.example.com"))))
-//                .andExpect(status().isUnauthorized()) // replace with your expected status code
-//                .andDo(mvcResult -> {
-//                    System.out.println("Response Status: " + mvcResult.getResponse().getStatus());
-//                });
-//    }
-
-
+        // Perform the test and expect success
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/keys")
+                        .header("Authorization", "Bearer token"))
+                .andExpect(status().isOk());
+    }
 
 
 }
+
+
+

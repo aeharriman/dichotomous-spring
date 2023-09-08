@@ -98,8 +98,8 @@ BTAF --> |wires|AM
 
 ```mermaid
 sequenceDiagram
-  participant Http as DelegatingFilterProxy
-  box grey SecurityFilterChain
+  participant Http as Http Request
+  box grey SecurityFilterChain<br/><br/>A filter can act both on the way in and the way out. These three only act on the way in.<br/><br/>Not all filters are shown.
   participant CorsF as CorsFilter
   participant FSI as FilterSecurityInterceptor
   participant BTAF as BearerTokenAuthenticationFilter
@@ -107,22 +107,18 @@ sequenceDiagram
   participant C as Controller
   
   Http->>CorsF: Preflight Request<br/> Could be cached or unnecessary
-  Note over Http,CorsF: OPTIONS /api/messages/protected<br/>Origin: http://localhost:4040<br/>Access-Control-Request-Method: GET<br/>Access-Control-Request-Headers: Authorization, Content-Type
+  Note over Http,CorsF: OPTIONS /api/keys<br/>Origin: http://localhost:6565<br/>Access-Control-Request-Method: GET<br/>Access-Control-Request-Headers: Authorization
   CorsF->>Http: Preflight Response
-  Note over CorsF,Http: Status: 200 (OK)<br/>Access-Control-Allow-Origin: http://localhost:4040<br/>Access-Control-Allow-Methods: GET<br/>Access-Control-Allow-Headers: Authorization, Content-Type<br/>Access-Control-Max-Age: 86400
+  Note over CorsF,Http: Status: 200 (OK)<br/>Access-Control-Allow-Origin: http://localhost:6565<br/>Access-Control-Allow-Methods: GET<br/>Access-Control-Allow-Headers: *<br/>Access-Control-Max-Age: 86400
   Http->>FSI: Send Actual Request
-  Note over Http,FSI: GET /api/messages/protected<br/>Authorization: Bearer (JWT access token)
-  Note over FSI: Path Exclusion Check for /protected and /admin
+  Note over Http,FSI: GET /api/keys<br/>Authorization: Bearer (JWT access token)
+  Note over FSI: Path Exclusion Check for /api/keys
   FSI->>BTAF: 
   Note over BTAF: Authentication Check (JWT)<br/>NimbusJwtDecoder automatically:<br/>Fetches public key from JWKS endpoint and verifies JWT signature.<br/>Checks JWT's exp claim to ensure it's not expired.<br/>If JWT has nbf claim, ensures current time is after it.<br/>Validates JWT's iss claim matches expected issuer (Auth0)<br/>Check aud is https://hello-world.example.com
   BTAF->>C: Hits endpoint
   Note over C: Calls service method<br/>that returns keys from DB
-  C->>CorsF: Build response
-  Note over C, CorsF: Status: 200 (OK)<br/>Body: { name: "Name1", key: "Key1" }
-  Note over CorsF: Set security-related headers: <br/>X-XSS-Protection, Strict-Transport-Security, etc.
-  CorsF->>Http: Response
-  Note over Http, CorsF: Status: 200 (OK)<br/>Body: { name: "Name1", key: "Key1" }<br/>Headers: Access-Control-Allow-Origin: http://localhost:4040, Security headers, etc
-  Note right of Http: Browser sees<br/> Access-Control-Allow-Origin:<br/> http://localhost:4040<br/>and displays content
+  C->>Http: Build response
+  Note over C, Http: Status: 200 (OK)<br/>Body: { name: "Name1", key: "Key1" }
 ```
 
 
